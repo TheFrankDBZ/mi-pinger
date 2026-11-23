@@ -1,0 +1,36 @@
+name: Ping
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping URLs
+        env:
+          PING_URLS: ${{ secrets.PING_URLS }}
+        run: |
+          IFS=',' read -ra URLS <<< "$PING_URLS"
+          fail=0
+          n=0
+          for url in "${URLS[@]}"; do
+            url="$(echo "$url" | xargs)"
+            [ -z "$url" ] && continue
+            n=$((n + 1))
+            echo "Ping #$n"
+            if curl -fsS -o /dev/null \
+              --max-time 60 \
+              --retry 3 --retry-delay 10 --retry-all-errors \
+              -w "status=%{http_code} tiempo=%{time_total}s\n" \
+              "$url"; then
+              echo "OK"
+            else
+              echo "FALLO en #$n"
+              fail=1
+            fi
+          done
+          exit $fail

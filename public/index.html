@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pinger</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Pinger</h1>
+      <p>Mantén despierto tu servidor y lleva el registro de su estado.</p>
+    </header>
+
+    <main class="layout">
+      <div class="stack">
+        <section class="card">
+          <h2>Nueva tarea</h2>
+          <form id="target-form" class="form">
+            <label>
+              Nombre
+              <input name="name" required placeholder="Mi API en Render" />
+            </label>
+
+            <div class="row">
+              <label>
+                Método
+                <select name="method">
+                  <option>GET</option>
+                  <option>HEAD</option>
+                  <option>POST</option>
+                  <option>PUT</option>
+                  <option>PATCH</option>
+                  <option>DELETE</option>
+                </select>
+              </label>
+              <label>
+                URL
+                <input
+                  name="url"
+                  type="url"
+                  required
+                  placeholder="https://mi-api.onrender.com/health"
+                />
+              </label>
+            </div>
+
+            <label>
+              Repetir cada
+              <select name="intervalMin">
+                <option value="1">1 minuto</option>
+                <option value="5">5 minutos</option>
+                <option value="10" selected>10 minutos</option>
+                <option value="14">14 minutos</option>
+                <option value="30">30 minutos</option>
+              </select>
+            </label>
+
+            <details>
+              <summary>Opciones avanzadas</summary>
+              <div class="form">
+                <label>
+                  Headers (JSON)
+                  <textarea
+                    name="headers"
+                    rows="3"
+                    placeholder='{"Authorization": "Bearer ..."}'
+                  ></textarea>
+                </label>
+                <label>
+                  Body
+                  <textarea name="body" rows="3"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <label class="check">
+              <input type="checkbox" name="autostart" checked />
+              Iniciar al guardar
+            </label>
+
+            <p id="form-error" class="form-error" role="alert"></p>
+            <button type="submit" class="btn primary">Guardar tarea</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Token del panel (opcional)</h2>
+          <label>
+            Solo si configuraste PANEL_TOKEN en Netlify
+            <input id="panel-token" type="password" autocomplete="off" />
+          </label>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>Tareas</h2>
+        <p class="hint">
+          Los intervalos de este panel solo corren mientras la pestaña esté
+          abierta. El cron de Netlify corre siempre por su cuenta.
+        </p>
+        <div id="targets" class="targets"></div>
+      </section>
+
+      <section class="card wide">
+        <div class="card-head">
+          <h2>Historial</h2>
+          <button id="clear-history" class="btn" type="button">Limpiar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Tarea</th>
+                <th>Estado</th>
+                <th>Código</th>
+                <th>Latencia</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
